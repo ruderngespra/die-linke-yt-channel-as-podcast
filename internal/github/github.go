@@ -70,6 +70,20 @@ func GetAllEpisodes(ctx context.Context, token, owner, repo string) ([]Episode, 
 func CreateRelease(ctx context.Context, token, owner, repo string, ep Episode, mp3Path string) (string, error) {
 	tag := "video-" + ep.VideoID
 
+	// Get file size before creating the release
+	info, err := os.Stat(mp3Path)
+	if err != nil {
+		return "", fmt.Errorf("stat mp3: %w", err)
+	}
+	ep.FileSizeBytes = info.Size()
+
+	// Derive the public asset URL before upload so we can store it in the release body.
+	// GitHub asset download URLs are deterministic:
+	// https://github.com/{owner}/{repo}/releases/download/{tag}/{filename}
+	assetFilename := ep.VideoID + ".mp3"
+	ep.MP3URL = fmt.Sprintf("https://github.com/%s/%s/releases/download/%s/%s",
+		owner, repo, tag, assetFilename)
+
 	body, err := json.Marshal(ep)
 	if err != nil {
 		return "", fmt.Errorf("marshal episode: %w", err)
@@ -90,8 +104,8 @@ func CreateRelease(ctx context.Context, token, owner, repo string, ep Episode, m
 	})
 
 	var release struct {
-		ID              int64  `json:"id"`
-		UploadURL       string `json:"upload_url"`
+		ID        int64  `json:"id"`
+		UploadURL string `json:"upload_url"`
 	}
 	if err := doRequest(ctx, token, http.MethodPost,
 		fmt.Sprintf("%s/repos/%s/%s/releases", apiBase, owner, repo),
@@ -100,12 +114,11 @@ func CreateRelease(ctx context.Context, token, owner, repo string, ep Episode, m
 	}
 
 	// Upload the MP3 asset
-	assetURL, err := uploadAsset(ctx, token, release.UploadURL, ep.VideoID+".mp3", mp3Path)
-	if err != nil {
+	if _, err := uploadAsset(ctx, token, release.UploadURL, assetFilename, mp3Path); err != nil {
 		return "", fmt.Errorf("upload asset: %w", err)
 	}
 
-	return assetURL, nil
+	return ep.MP3URL, nil
 }
 
 // PublishFeed commits feed.xml to the gh-pages branch.
