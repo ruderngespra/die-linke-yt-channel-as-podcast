@@ -49,14 +49,14 @@ func TestParseYtdlpOutput(t *testing.T) {
 			Title       string `json:"title"`
 			Description string `json:"description"`
 			UploadDate  string `json:"upload_date"`
-			Duration    int    `json:"duration"`
+			Duration    float64 `json:"duration"`
 			URL         string `json:"url"`
 		}{
 			{
 				ID:         "abc123",
 				Title:      "Test Stream",
 				UploadDate: "20260401",
-				Duration:   7200,
+				Duration:   7200.0,
 				URL:        "https://www.youtube.com/watch?v=abc123",
 			},
 			{
@@ -73,7 +73,7 @@ func TestParseYtdlpOutput(t *testing.T) {
 			ID:           e.ID,
 			Title:        e.Title,
 			Description:  e.Description,
-			DurationSecs: e.Duration,
+			DurationSecs: int(e.Duration),
 			WebpageURL:   "https://www.youtube.com/watch?v=" + e.ID,
 		}
 		if e.UploadDate != "" {

@@ -27,7 +27,7 @@ type ytFlatPlaylist struct {
 		Title       string `json:"title"`
 		Description string `json:"description"`
 		UploadDate  string `json:"upload_date"` // YYYYMMDD, may be absent in flat mode
-		Duration    int    `json:"duration"`
+		Duration    float64 `json:"duration"`
 		URL         string `json:"url"`
 	} `json:"entries"`
 }
@@ -65,7 +65,7 @@ func ListStreams(limit int) ([]VideoMeta, error) {
 			ID:           e.ID,
 			Title:        e.Title,
 			Description:  e.Description,
-			DurationSecs: e.Duration,
+			DurationSecs: int(e.Duration),
 			WebpageURL:   fmt.Sprintf("https://www.youtube.com/watch?v=%s", e.ID),
 		}
 		if e.UploadDate != "" {
