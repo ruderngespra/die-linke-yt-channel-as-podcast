@@ -3,7 +3,12 @@ name: Sync YouTube to Podcast
 on:
   schedule:
     - cron: '0 6 * * *'  # 06:00 UTC daily
-  workflow_dispatch:       # manual trigger for testing
+  workflow_dispatch:
+    inputs:
+      playlist_limit:
+        description: 'Max videos to check (default: 50)'
+        required: false
+        default: '50'
 
 permissions:
   contents: write   # needed to create releases and push to gh-pages
@@ -41,4 +46,5 @@ jobs:
           GITHUB_OWNER:  ${{ github.repository_owner }}
           GITHUB_REPO:   ${{ github.event.repository.name }}
           FEED_BASE_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
+          YT_PLAYLIST_LIMIT: ${{ github.event.inputs.playlist_limit || '50' }}
         run: ./yt-to-podcast
