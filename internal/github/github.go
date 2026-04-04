@@ -108,7 +108,7 @@ func CreateRelease(ctx context.Context, token, owner, repo string, ep Episode, m
 	return assetURL, nil
 }
 
-// PublishFeed commits feed.xml to the gh-pages branch (creates it if it doesn't exist).
+// PublishFeed commits feed.xml to the gh-pages branch.
 func PublishFeed(ctx context.Context, token, owner, repo string, feedXML []byte) error {
 	const branch = "gh-pages"
 	const path = "feed.xml"
