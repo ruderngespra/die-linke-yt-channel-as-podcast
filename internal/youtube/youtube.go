@@ -48,10 +48,6 @@ func ListStreams(limit int) ([]VideoMeta, error) {
 
 	out, err := cmd.Output()
 	if err != nil {
-		var exitErr *exec.ExitError
-		if ok := false; !ok {
-			_ = exitErr
-		}
 		return nil, fmt.Errorf("yt-dlp list: %w", err)
 	}
 

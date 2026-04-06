@@ -15,8 +15,8 @@ func TestLoadFromEnv_Success(t *testing.T) {
 	if cfg.GitHubToken != "test-token" {
 		t.Errorf("GitHubToken = %q, want test-token", cfg.GitHubToken)
 	}
-	if cfg.YTPlaylistLimit != 50 {
-		t.Errorf("YTPlaylistLimit = %d, want 50 (default)", cfg.YTPlaylistLimit)
+	if cfg.YTPlaylistLimit != 5 {
+		t.Errorf("YTPlaylistLimit = %d, want 5 (default)", cfg.YTPlaylistLimit)
 	}
 	if cfg.FeedTitle != "DIE LINKE Pressekonferenzen" {
 		t.Errorf("FeedTitle = %q, want default", cfg.FeedTitle)
