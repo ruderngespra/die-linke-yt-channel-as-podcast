@@ -7,5 +7,14 @@
     <language>de</language>
     <itunes:author>DIE LINKE</itunes:author>
     <itunes:explicit>false</itunes:explicit>
+    <item>
+      <title>Janis Ehling on the visit of Syrian ruler Al-Sharaa to Merz</title>
+      <description></description>
+      <pubDate></pubDate>
+      <guid isPermaLink="false">7mtrg7PV2hM</guid>
+      <enclosure url="https://github.com/ruderngespra/die-linke-yt-channel-as-podcast/releases/download/video-7mtrg7PV2hM/7mtrg7PV2hM.mp3" length="7169708" type="audio/mpeg"></enclosure>
+      <itunes:duration>7:28</itunes:duration>
+      <itunes:episodeType>full</itunes:episodeType>
+    </item>
   </channel>
 </rss>
