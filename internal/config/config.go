@@ -31,7 +31,7 @@ func LoadFromEnv() (*Config, error) {
 		FeedDescription: "Livestreams und Pressekonferenzen des YouTube-Kanals von DIE LINKE, als Podcast.",
 		FeedLanguage:    "de",
 		FeedLink:        "https://www.youtube.com/@DIELINKE/streams",
-		YTPlaylistLimit: 50,
+		YTPlaylistLimit: 5,
 		TempDir:         os.TempDir(),
 	}
 
