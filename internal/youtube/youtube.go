@@ -1,6 +1,7 @@
 package youtube
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"os/exec"
@@ -74,6 +75,51 @@ func ListStreams(limit int) ([]VideoMeta, error) {
 		videos = append(videos, meta)
 	}
 	return videos, nil
+}
+
+// ytVideoMeta is the JSON shape returned by yt-dlp --dump-json for a single video.
+type ytVideoMeta struct {
+	ID          string  `json:"id"`
+	Title       string  `json:"title"`
+	Description string  `json:"description"`
+	UploadDate  string  `json:"upload_date"` // YYYYMMDD
+	Duration    float64 `json:"duration"`
+}
+
+// FetchVideoMeta fetches full metadata for a single video, including the correct
+// locale-aware title and description.
+func FetchVideoMeta(ctx context.Context, videoID string) (VideoMeta, error) {
+	videoURL := fmt.Sprintf("https://www.youtube.com/watch?v=%s", videoID)
+	cmd := exec.CommandContext(ctx,
+		"yt-dlp",
+		"--dump-json",
+		"--no-playlist",
+		"--no-warnings",
+		"--quiet",
+		videoURL,
+	)
+
+	out, err := cmd.Output()
+	if err != nil {
+		return VideoMeta{}, fmt.Errorf("yt-dlp fetch meta %s: %w", videoID, err)
+	}
+
+	var v ytVideoMeta
+	if err := json.Unmarshal(out, &v); err != nil {
+		return VideoMeta{}, fmt.Errorf("parse yt-dlp meta %s: %w", videoID, err)
+	}
+
+	meta := VideoMeta{
+		ID:           v.ID,
+		Title:        v.Title,
+		Description:  v.Description,
+		DurationSecs: int(v.Duration),
+		WebpageURL:   videoURL,
+	}
+	if v.UploadDate != "" {
+		meta.PublishedAt = parseUploadDate(v.UploadDate)
+	}
+	return meta, nil
 }
 
 // Download downloads the best audio for a video ID into destDir.

@@ -128,6 +128,14 @@ func run() error {
 }
 
 func processVideo(ctx context.Context, cfg *config.Config, video youtube.VideoMeta, tmpDir string) error {
+	// Fetch full metadata for correct locale-aware title and description
+	fullMeta, err := youtube.FetchVideoMeta(ctx, video.ID)
+	if err != nil {
+		log.Printf("warning: could not fetch full meta for %s, using playlist data: %v", video.ID, err)
+	} else {
+		video = fullMeta
+	}
+
 	// Download audio
 	downloadedPath, err := youtube.Download(video.ID, tmpDir)
 	if err != nil {

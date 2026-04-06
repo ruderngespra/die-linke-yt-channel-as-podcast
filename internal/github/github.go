@@ -221,10 +221,16 @@ func uploadAsset(ctx context.Context, token, uploadURL, filename, filePath strin
 	}
 	defer f.Close()
 
+	info, err := f.Stat()
+	if err != nil {
+		return "", fmt.Errorf("stat %s: %w", filePath, err)
+	}
+
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, f)
 	if err != nil {
 		return "", err
 	}
+	req.ContentLength = info.Size()
 	req.Header.Set("Authorization", "Bearer "+token)
 	req.Header.Set("Content-Type", "audio/mpeg")
 
