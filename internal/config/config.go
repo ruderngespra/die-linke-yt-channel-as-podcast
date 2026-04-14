@@ -28,7 +28,7 @@ type Config struct {
 func LoadFromEnv() (*Config, error) {
 	cfg := &Config{
 		FeedTitle:       "DIE LINKE Pressekonferenzen",
-		FeedDescription: "Livestreams und Pressekonferenzen des YouTube-Kanals von DIE LINKE, als Podcast.",
+		FeedDescription: "Livestreams und Pressekonferenzen von DIE LINKE und der Linksfraktion im Bundestag, als Podcast.",
 		FeedLanguage:    "de",
 		FeedLink:        "https://www.youtube.com/@DIELINKE/streams",
 		YTPlaylistLimit: 5,

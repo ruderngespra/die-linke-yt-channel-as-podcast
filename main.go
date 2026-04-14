@@ -38,10 +38,21 @@ func run() error {
 	}
 	log.Printf("%d videos already processed", len(processed))
 
-	// 3. List recent streams from YouTube
-	videos, err := youtube.ListStreams(cfg.YTPlaylistLimit)
-	if err != nil {
-		return fmt.Errorf("list streams: %w", err)
+	// 3. List recent streams from all monitored YouTube channels
+	seen := make(map[string]bool)
+	var videos []youtube.VideoMeta
+	for _, channelURL := range youtube.ChannelURLs {
+		channelVideos, err := youtube.ListStreams(channelURL, cfg.YTPlaylistLimit)
+		if err != nil {
+			log.Printf("warning: list streams from %s: %v — skipping channel", channelURL, err)
+			continue
+		}
+		for _, v := range channelVideos {
+			if !seen[v.ID] {
+				seen[v.ID] = true
+				videos = append(videos, v)
+			}
+		}
 	}
 	log.Printf("found %d videos from YouTube", len(videos))
 

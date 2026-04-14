@@ -10,7 +10,11 @@ import (
 	"time"
 )
 
-const channelURL = "https://www.youtube.com/@DIELINKE/streams"
+// ChannelURLs lists all YouTube stream pages monitored by this podcast.
+var ChannelURLs = []string{
+	"https://www.youtube.com/@DIELINKE/streams",
+	"https://www.youtube.com/@dielinkebt/streams",
+}
 
 type VideoMeta struct {
 	ID           string
@@ -33,8 +37,8 @@ type ytFlatPlaylist struct {
 	} `json:"entries"`
 }
 
-// ListStreams returns up to limit recent livestreams from the channel, newest first.
-func ListStreams(limit int) ([]VideoMeta, error) {
+// ListStreams returns up to limit recent livestreams from channelURL, newest first.
+func ListStreams(channelURL string, limit int) ([]VideoMeta, error) {
 	playlistItems := fmt.Sprintf("1-%d", limit)
 	cmd := exec.Command(
 		"yt-dlp",
